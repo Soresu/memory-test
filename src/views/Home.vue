@@ -1,18 +1,50 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <my-header></my-header>
+    <button @click="containerKey++">Recreate {{ containerKey }}</button>
+    <!-- <button @click="RecreateX">Recreate 20x</button> -->
+    <button @click="ToggleShow">Show/Hide</button>
+    <hr />
+    <div :key="containerKey" v-if="show">
+      <todo-container v-for="n in todoContainerCt" :key="n"></todo-container>
+    </div>
+
+    <div v-else>
+      Todos are hidden
+    </div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import { MAX_TODO_CONTAINER, timeout } from '../utils/common';
 
 export default {
-  name: "Home",
-  components: {
-    HelloWorld
-  }
+  name: 'Home',
+  data: function() {
+    return {
+      show: false,
+      containerKey: 0,
+      todoContainerCt: MAX_TODO_CONTAINER,
+    };
+  },
+  methods: {
+    async ToggleShow() {
+      this.show = !this.show;
+    },
+    async RecreateX() {
+      for (let i = 0; i < 20; i++) {
+        this.containerKey++;
+        await timeout(100);
+      }
+    },
+  },
+  computed: {
+    updateKey() {
+      return [this.show, this.containerKey].join('_');
+    },
+  },
+  watch: {
+    updateKey: function() {},
+  },
 };
 </script>
